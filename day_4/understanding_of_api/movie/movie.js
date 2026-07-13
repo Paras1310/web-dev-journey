@@ -1,4 +1,4 @@
-const movieName = document.getElementById("movieName");
+const movieName = document.getElementById("movie");
 const searchBtn = document.getElementById("searchBtn");
 const resultDiv = document.getElementById("result");
 
