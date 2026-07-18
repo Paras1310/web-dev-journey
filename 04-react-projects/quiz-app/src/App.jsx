@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Question from "./Question";
+import ResultScreen from "./ResultScreen"
 
 const questions = [
   {
@@ -19,61 +21,40 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
 
   function handleNext() {
-  if (selectedAnswer === null) {
-    alert("Please select an option")
-    return
+    if (selectedAnswer === null) {
+      alert("Please select an option");
+      return;
+    }
+
+    const isCorrect = selectedAnswer === questions[currentQuestionIndex].correctAnswer;
+
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    setSelectedAnswer(null);
   }
 
-  const isCorrect = selectedAnswer === questions[currentQuestionIndex].correctAnswer
-
-  if (isCorrect) {
-    setScore(score + 1)
+  function handlePlayAgain() {
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setSelectedAnswer(null);
   }
 
-  setCurrentQuestionIndex(currentQuestionIndex + 1)
-  setSelectedAnswer(null)
-}
-
-function handlePlayAgain() {
-  setCurrentQuestionIndex(0)
-  setScore(0)
-  setSelectedAnswer(null)
-}
-
-if (currentQuestionIndex >= questions.length) {
-  return (
-    <div>
-      <h2>All questions are finished</h2>
-      <p>Your score: {score}</p>
-      <button onClick={handlePlayAgain}>Play Again</button>
-    </div>
-  )
+  if (currentQuestionIndex >= questions.length) {
+  return <ResultScreen score={score} onPlayAgain={handlePlayAgain} />;
 }
 
   return (
-    <div>
-      <h2>{questions[currentQuestionIndex].question}</h2>
-      {questions[currentQuestionIndex].options.map((option) => (
-        <label key={option}>
-          <input
-            type="radio"
-            name="answer"
-            value={option}
-            checked={selectedAnswer === option}
-            onChange={() => setSelectedAnswer(option)}
-          />
-          {option}
-        </label>
-        
-      ))}
-      <button onClick={handleNext}>Next</button>
-      
-    </div>
+    <Question
+      question={questions[currentQuestionIndex].question}
+      options={questions[currentQuestionIndex].options}
+      selectedAnswer={selectedAnswer}
+      onSelect={setSelectedAnswer}
+      onNext={handleNext}
+    />
   );
-
-  
 }
-
-
 
 export default App;
